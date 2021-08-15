@@ -10,3 +10,15 @@ Pasos que se siguen para la elaboración del proyecto
 4. git commit -m "First commit"
 5. git remote add origin https://github.com/DarlynYami05/Heart_Monitor_Server.git
 6. git push -u origin master
+
+# Crear la app WebService
+7. python manage.py startapp WebService
+
+# Incluir la aplicación WebService en urls root
+8. path('webservice/', include('WebService.urls'))
+
+# Crear la app AppServer
+python manage.py startapp AppServer
+
+# Incluir la aplicación AppServer en urls root
+path('appserver/', include('AppServer.urls'))
