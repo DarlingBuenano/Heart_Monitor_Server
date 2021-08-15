@@ -17,7 +17,7 @@ Pasos que se siguen para la elaboración del proyecto
 # Incluir la aplicación WebService en urls root
 8. path('webservice/', include('WebService.urls'))
 
-# Crear la app AppServer
+# Crear la app AppServer (Esto sólo si se desea hacer una aplicacion web con tecnologías de frontend)
 python manage.py startapp AppServer
 
 # Incluir la aplicación AppServer en urls root

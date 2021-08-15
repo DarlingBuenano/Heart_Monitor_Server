@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'WebService',
 ]
 
 MIDDLEWARE = [
@@ -53,7 +54,7 @@ WSGI_APPLICATION = 'Heart_Monitor_Server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ecuador_vacunacion',
+        'NAME': 'heart_monitor',
         'USER': 'postgres',
         'PASSWORD': '123456',
         'HOST': 'localhost',

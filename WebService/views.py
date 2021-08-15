@@ -8,6 +8,10 @@ class InicioSesion(APIView):
         if request.method == 'POST':
             return Response({'response': 'POST de Inicio de sesión en mantenimiento'})
         return Response({'response': 'Clase Inicio de sesión en mantenimiento'})
+    
+    def get(self, request, format = None):
+        if request.method == 'GET':
+            return Response({'response': 'Este mensaje es de prueba. Este método GET será eliminado'})
 
 
 class Registrarse(APIView):
