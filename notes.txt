@@ -1,0 +1,12 @@
+
+Pasos que se siguen para la elaboración del proyecto
+
+# Crear el proyecto django
+1. django-admin startproject Heart_Monitor_Server
+
+# Subir el repositorio a github
+2. git init
+3. git add .
+4. git commit -m "First commit"
+5. git remote add origin https://github.com/DarlynYami05/Heart_Monitor_Server.git
+6. git push -u origin master
