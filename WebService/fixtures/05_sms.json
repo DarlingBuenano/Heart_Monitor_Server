@@ -1,0 +1,12 @@
+[
+    {
+        "model": "WebService.SMS",
+        "pk": 1,
+        "fields": {
+            "usuario": 1,
+            "familiar": 1,
+            "fecha_hora": "2021-15-08 15:35",
+            "msj_sms": "El paciente Darling Omar Buenaño Vera esta teniendo ataques al corazón, 115 bpm hoy a las 15:35"
+        }
+    }
+]

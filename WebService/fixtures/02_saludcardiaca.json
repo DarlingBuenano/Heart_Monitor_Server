@@ -1,0 +1,10 @@
+[
+    {
+        "model": "WebService.SaludCardiaca",
+        "pk": 1,
+        "fields": {
+            "usuario": 1,
+            "fecha": "2021-08-15"
+        }
+    }
+]

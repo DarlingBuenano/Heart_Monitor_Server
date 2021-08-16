@@ -1,0 +1,32 @@
+[
+    {
+        "model": "WebService.Usuarios",
+        "pk": 1,
+        "fields": {
+            "usuario": "DarlingBV05",
+            "clave": "123456",
+            "nombre1": "Darling",
+            "nombre2": "Omar",
+            "apellido1": "Buenaño",
+            "apellido2": "Vera",
+            "fecha_nacimiento": "1999-02-05",
+            "genero": "M",
+            "correo": "dwverling@gmail.com"
+        }
+    },
+    {
+        "model": "WebService.Usuarios",
+        "pk": 2,
+        "fields": {
+            "usuario": "HenryPM06",
+            "clave": "123456",
+            "nombre1": "Henry",
+            "nombre2": "Heriberto",
+            "apellido1": "Pérez",
+            "apellido2": "Muñoz",
+            "fecha_nacimiento": "2000-01-01",
+            "genero": "M",
+            "correo": "hgperez@gmail.com"
+        }
+    }
+]

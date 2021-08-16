@@ -17,6 +17,26 @@ Pasos que se siguen para la elaboración del proyecto
 # Incluir la aplicación WebService en urls root
 8. path('webservice/', include('WebService.urls'))
 
+# Crear los modelos
+* Usuarios
+* Familiar
+* SaludCardiaca
+* BPM
+* Alertas
+* SMS
+
+# Hacer las migraciones
+9. python manage.py makemigrations
+10. python manage.py migrate
+
+# Crear y cargar los fixtures
+python manage.py loaddata 00_usuarios.json
+python manage.py loaddata 01_familiares.json
+python manage.py loaddata 02_saludcardiaca.json
+python manage.py loaddata 03_bpm.json
+python manage.py loaddata 04_alertas.json
+python manage.py loaddata 05_sms.json
+
 # Crear la app AppServer (Esto sólo si se desea hacer una aplicacion web con tecnologías de frontend)
 python manage.py startapp AppServer
 
