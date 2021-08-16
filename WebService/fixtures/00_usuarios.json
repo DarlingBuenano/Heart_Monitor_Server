@@ -5,13 +5,7 @@
         "fields": {
             "usuario": "DarlingBV05",
             "clave": "123456",
-            "nombre1": "Darling",
-            "nombre2": "Omar",
-            "apellido1": "Buenaño",
-            "apellido2": "Vera",
-            "fecha_nacimiento": "1999-02-05",
-            "genero": "M",
-            "correo": "dwverling@gmail.com"
+            "tipo_cuenta": "Paciente"
         }
     },
     {
@@ -20,13 +14,25 @@
         "fields": {
             "usuario": "HenryPM06",
             "clave": "123456",
-            "nombre1": "Henry",
-            "nombre2": "Heriberto",
-            "apellido1": "Pérez",
-            "apellido2": "Muñoz",
-            "fecha_nacimiento": "2000-01-01",
-            "genero": "M",
-            "correo": "hgperez@gmail.com"
+            "tipo_cuenta": "Paciente"
+        }
+    },
+    {
+        "model": "WebService.Usuarios",
+        "pk": 3,
+        "fields": {
+            "usuario": "Asistente01",
+            "clave": "123456",
+            "tipo_cuenta": "Familiar"
+        }
+    },
+    {
+        "model": "WebService.Usuarios",
+        "pk": 4,
+        "fields": {
+            "usuario": "Asistente02",
+            "clave": "123456",
+            "tipo_cuenta": "Familiar"
         }
     }
 ]

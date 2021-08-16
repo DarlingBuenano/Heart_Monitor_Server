@@ -80,10 +80,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'es-ec'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Guayaquil'
 USE_I18N = True
 USE_L10N = True
-USE_TZ = True
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
+
+# Media files (Videos, Imagenes, etc)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

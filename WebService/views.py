@@ -2,44 +2,96 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from WebService.models import *
 import json
+from django.core.exceptions import ObjectDoesNotExist
 
 class InicioSesion(APIView):
     def post(self, request, format = None):
         if request.method == 'POST':
-            return Response({'response': 'POST de Inicio de sesión en mantenimiento'})
-        return Response({'response': 'Clase Inicio de sesión en mantenimiento'})
-    
-    def get(self, request, format = None):
-        if request.method == 'GET':
-            return Response({'response': 'Este mensaje es de prueba. Este método GET será eliminado'})
+            
+            user = request.POST['usuario']
+            passw = request.POST['clave']
+            try:
+                unUsuario = Usuarios.objects.get(usuario = user, clave = passw)
+                json_data = []
+
+                if(unUsuario.tipo_cuenta == 'Paciente'):
+                    unPaciente = Pacientes.objects.get(usuario = unUsuario.id)
+                    json_data = {
+                        "tipo_cuenta": "Paciente",
+                        "nombre1": unPaciente.nombre1,
+                        "nombre2": unPaciente.nombre2,
+                        "apellido1": unPaciente.apellido1,
+                        "apellido2": unPaciente.apellido2,
+                        "fecha_nacimiento": unPaciente.fecha_nacimiento,
+                        "ruta_foto": str(unPaciente.ruta_foto),
+                        "genero": unPaciente.genero,
+                        "correo": unPaciente.correo,
+                    }
+                else:
+                    unFamiliar = Familiares.objects.get(usuario = unUsuario.id)
+                    json_data = {
+                        "tipo_cuenta": "Familiar",
+                        "nombres": unPaciente.nombres,
+                        "apellidos": unPaciente.apellidos,
+                        "ruta_foto": str(unPaciente.ruta_foto),
+                        "paciente": unPaciente.paciente,
+                        "genero": unPaciente.genero,
+                        "celular": unPaciente.celular,
+                    }
+                
+                return Response( json_data )
+            except ObjectDoesNotExist:
+                return Response( {'response': 'Usuario no existe'} )
+        else:
+            return Response({'response': 'Método no definido para la clase InicioSesion'})
 
 
-class Registrarse(APIView):
+class RegistrarPaciente(APIView):
     def post(self, request, format = None):
         if request.method == 'POST':
-            return Response({'response': 'POST de Registrarse en mantenimiento'})
-        return Response({'response': 'Clase Registrarse en mantenimiento'})
 
-"""
-try:
-    json_data = json.loads(request.body.decode('utf-8'))
-    cedula = json_data['cedula']
-    nombres = (json_data['nombres']).split()
-    nombre1 = nombres[0]
-    nombre2 = nombres[1]
-    apellido1 = nombres[2]
-    apellido2 = nombres[3]
-    unCiudadano = ciudadanos.objects.get(cedula=cedula, nombre1__icontains=nombre1, nombre2__icontains=nombre2, apellido1__icontains=apellido1, apellido2__icontains=apellido2)
-    json_consulta = {
-        "nombres": json_data['nombres'].upper(),
-        "provincia": unCiudadano.provincia.provincia,
-        "canton": unCiudadano.canton.canton,
-        "centro_vacunacion": unCiudadano.centroVacunacion.centro_vacunacion,
-        "direccion": unCiudadano.centroVacunacion.direccion,
-        "primera_dosis": unCiudadano.primeraDosis,
-        "segunda_dosis": unCiudadano.segundaDosis
-    }
-    return Response({"consulta": json_consulta})    
-except ciudadanos.DoesNotExist:
-    return Response({"mensaje": "Ups, no se encuentra registrado...."})
-"""
+            unUsuario = Usuarios()
+            unUsuario.usuario = request.POST['usuario']
+            unUsuario.clave = request.POST['clave']
+            unUsuario.tipo_cuenta = request.POST['tipo_cuenta']
+            unUsuario.save()
+
+            unPaciente = Pacientes()
+            unPaciente.usuario = unUsuario
+            unPaciente.nombre1 = request.POST['nombre1']
+            unPaciente.nombre2 = request.POST['nombre2']
+            unPaciente.apellido1 = request.POST['apellido1']
+            unPaciente.apellido2 = request.POST['apellido2']
+            unPaciente.fecha_nacimiento = request.POST['fecha_nacimiento']
+            unPaciente.genero = request.POST['genero']
+            unPaciente.correo = request.POST['correo']
+            unPaciente.save()
+
+            return Response({'paciente': unPaciente.nombre1 + " " + unPaciente.apellido1, 'id': str(unPaciente.id)})
+        else:
+            return Response({'response': 'Método no definido para la clase RegistrarPaciente'})
+
+
+class RegistrarFamiliar(APIView):
+    def post(self, request, format = None):
+        if request.method == 'POST':
+            unUsuario = Usuarios()
+            unUsuario.usuario = request.POST['usuario']
+            unUsuario.clave = request.POST['clave']
+            unUsuario.tipo_cuenta = request.POST['tipo_cuenta']
+            unUsuario.save()
+
+            unPaciente = Pacientes.objects.get(pk = request.POST['paciente'])
+
+            unFamiliar = Familiares()
+            unFamiliar.usuario = unUsuario
+            unFamiliar.nombres = request.POST['nombres']
+            unFamiliar.apellidos = request.POST['apellidos']
+            unFamiliar.paciente = unPaciente
+            unFamiliar.genero = request.POST['genero']
+            unFamiliar.celular = request.POST['celular']
+            unFamiliar.save()
+
+            return Response({'familiar': unFamiliar.nombres, 'id': str(unFamiliar.id)})
+        else:
+            return Response({'response': 'Método no definido para la clase RegistrarFamiliar'})
