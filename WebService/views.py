@@ -44,6 +44,10 @@ class InicioSesion(APIView):
                 return Response( {'response': 'Usuario no existe'} )
         else:
             return Response({'response': 'Método no definido para la clase InicioSesion'})
+    
+    def get(self, request, format = None):
+        if request.method == 'GET':
+            return Response({'response': 'Metodo get'})
 
 
 class RegistrarPaciente(APIView):
