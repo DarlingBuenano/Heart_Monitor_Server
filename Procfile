@@ -1,1 +1,0 @@
-web: gunicorn Heart_Monitor_Server.wsgi --log-file -
