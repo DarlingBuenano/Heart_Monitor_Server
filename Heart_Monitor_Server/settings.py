@@ -4,9 +4,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = 'zt@hs)$q95&so)=dpd8!f4cla(x(5i7_*s#8**e5ysc&wb*e2@'
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["localhost", "132.226.252.133", "heartmonitor.com"]
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -29,6 +29,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'Heart_Monitor_Server.urls'
@@ -51,15 +52,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Heart_Monitor_Server.wsgi.application'
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': 'heart_monitor',
+#        'USER': 'postgres',
+#        'PASSWORD': '123456',
+#        'HOST': 'localhost',
+#        'DATABASE_PORT': '5432',
+#    }
+#}
+
+import dj_database_url
+from decouple import config
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'heart_monitor',
-        'USER': 'postgres',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'DATABASE_PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
 }
 
 # Password validation
@@ -86,7 +95,10 @@ USE_L10N = True
 USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'))
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (Videos, Imagenes, etc)
 MEDIA_URL = '/media/'
