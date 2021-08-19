@@ -19,7 +19,7 @@ class InicioSesion(APIView):
                 if unUsuario.tipo_cuenta == "Paciente":
                     unPaciente = Pacientes.objects.get(usuario=unUsuario.id)
                     json_data = {
-                        "error": False,
+                        "acceso": False,
                         "mensaje": "El usuario esta logeado",
                         "usuario": user,
                         "paciente": {
@@ -38,7 +38,7 @@ class InicioSesion(APIView):
                 else:
                     unFamiliar = Familiares.objects.get(usuario=unUsuario.id)
                     json_data = {
-                        "error": False,
+                        "acceso": False,
                         "mensaje": "El usuario esta logeado",
                         "usuario": user,
                         "familiar": {
