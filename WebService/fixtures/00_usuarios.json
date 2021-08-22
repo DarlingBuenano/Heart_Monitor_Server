@@ -3,7 +3,7 @@
         "model": "WebService.Usuarios",
         "pk": 1,
         "fields": {
-            "usuario": "DarlingBV05",
+            "nom_usuario": "DarlingBV05",
             "clave": "123456",
             "tipo_cuenta": "Paciente"
         }
@@ -12,7 +12,7 @@
         "model": "WebService.Usuarios",
         "pk": 2,
         "fields": {
-            "usuario": "HenryPM06",
+            "nom_usuario": "HenryPM06",
             "clave": "123456",
             "tipo_cuenta": "Paciente"
         }
@@ -21,7 +21,7 @@
         "model": "WebService.Usuarios",
         "pk": 3,
         "fields": {
-            "usuario": "Asistente01",
+            "nom_usuario": "Asistente01",
             "clave": "123456",
             "tipo_cuenta": "Familiar"
         }
@@ -30,7 +30,7 @@
         "model": "WebService.Usuarios",
         "pk": 4,
         "fields": {
-            "usuario": "Asistente02",
+            "nom_usuario": "Asistente02",
             "clave": "123456",
             "tipo_cuenta": "Familiar"
         }

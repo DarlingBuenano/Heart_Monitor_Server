@@ -8,80 +8,112 @@ from django.core.exceptions import ObjectDoesNotExist
 class InicioSesion(APIView):
     def post(self, request, format=None):
         if request.method == "POST":
-
-            user = request.POST["usuario"]
-            passw = request.POST["clave"]
             try:
-                unUsuario = Usuarios.objects.get(usuario=user, clave=passw)
-
-                json_data = {}
-
-                if unUsuario.tipo_cuenta == "Paciente":
-                    unPaciente = Pacientes.objects.get(usuario=unUsuario.id)
-                    json_data = {
-                        "acceso": False,
-                        "mensaje": "El usuario esta logeado",
-                        "usuario": user,
-                        "paciente": {
-                            "tipo_cuenta": "Paciente",
-                            "id": unPaciente.id,
-                            "fir_nombre": unPaciente.nombre1,
-                            "sec_nombre": unPaciente.nombre2,
-                            "fir_apellido": unPaciente.apellido1,
-                            "sec_apellido": unPaciente.apellido2,
-                            "fecha_nacimiento": unPaciente.fecha_nacimiento,
-                            "ruta_foto": str(unPaciente.ruta_foto),
-                            "genero": unPaciente.genero,
-                            "correo": unPaciente.correo,
-                        },
-                    }
+                user = request.POST["usuario"]
+                passw = request.POST["clave"]
+                if not user == passw == "" and not user == "":
+                    try:
+                        usuario = Usuarios.objects.get(nom_usuario=user)
+                        json_data = {}
+                        if usuario.clave == passw:
+                            if usuario.tipo_cuenta == "Paciente":
+                                paciente = Pacientes.objects.get(usuario=usuario.id)
+                                json_familiar = []
+                                for familiar in paciente.familiares.all():
+                                    json_familiar.append(
+                                        {
+                                            "id": familiar.id,
+                                            "nombres": familiar.nombres,
+                                            "apellidos": familiar.apellidos,
+                                            "ruta_foto": str(familiar.ruta_foto),
+                                            "genero": familiar.genero,
+                                            "celular": familiar.celular,
+                                        }
+                                    )
+                                json_data = {
+                                    "acceso": True,
+                                    "mensaje": "El usuario esta logeado",
+                                    "usuario": user,
+                                    "paciente": {
+                                        "tipo_cuenta": "Paciente",
+                                        "id": paciente.id,
+                                        "fir_nombre": paciente.nombre1,
+                                        "sec_nombre": paciente.nombre2,
+                                        "fir_apellido": paciente.apellido1,
+                                        "sec_apellido": paciente.apellido2,
+                                        "fecha_nacimiento": paciente.fecha_nacimiento,
+                                        "ruta_foto": str(paciente.ruta_foto),
+                                        "genero": paciente.genero,
+                                        "correo": paciente.correo,
+                                        "familiares": json_familiar,
+                                    },
+                                }
+                            else:
+                                familiar = Familiares.objects.get(usuario=usuario.id)
+                                json_data = {
+                                    "acceso": True,
+                                    "mensaje": "El usuario esta logeado",
+                                    "usuario": user,
+                                    "familiar": {
+                                        "tipo_cuenta": "Familiar",
+                                        "id": familiar.id,
+                                        "nombres": familiar.nombres,
+                                        "apellidos": familiar.apellidos,
+                                        "ruta_foto": str(familiar.ruta_foto),
+                                        "genero": familiar.genero,
+                                        "celular": familiar.celular,
+                                        "paciente": {
+                                            "usuario": familiar.paciente.usuario.nom_usuario,
+                                            "id": familiar.paciente.id,
+                                            "fir_nombre": familiar.paciente.nombre1,
+                                            "sec_nombre": familiar.paciente.nombre2,
+                                            "fir_apellido": familiar.paciente.apellido1,
+                                            "sec_apellido": familiar.paciente.apellido2,
+                                            "fecha_nacimiento": familiar.paciente.fecha_nacimiento,
+                                            "ruta_foto": str(familiar.paciente.ruta_foto),
+                                            "genero": familiar.paciente.genero,
+                                            "correo": familiar.paciente.correo,
+                                        },
+                                    },
+                                }
+                        else:
+                            json_data = {
+                                "acceso": False,
+                                "mensaje": "Contraseña incorrecta, intentelo nuevamente",
+                            }
+                        return Response(json_data)
+                    except ObjectDoesNotExist:
+                        return Response({"acceso": False, "mensaje": "El usuario no existe, registrate o intentalo de nuevo"})
                 else:
-                    unFamiliar = Familiares.objects.get(usuario=unUsuario.id)
-                    json_data = {
-                        "acceso": False,
-                        "mensaje": "El usuario esta logeado",
-                        "usuario": user,
-                        "familiar": {
-                            "tipo_cuenta": "Familiar",
-                            "id": unFamiliar.id,
-                            "nombres": unFamiliar.nombres,
-                            "apellidos": unFamiliar.apellidos,
-                            "ruta_foto": str(unFamiliar.ruta_foto),
-                            "paciente": unFamiliar.paciente,
-                            "genero": unFamiliar.genero,
-                            "celular": unFamiliar.celular,
-                        },
-                    }
-
-                return Response(json_data)
-            except ObjectDoesNotExist:
-                return Response({"error": True, "mensaje": "Usuario no existe"})
+                    return Response({"acceso": False, "mensaje": "Campos vacios, ingrese un usuario y contraseña"})
+            except:
+                return Response({"acceso": False, "mensaje": "Faltan los parametros"})
         else:
-            return Response({"error": True, "mensaje": "Método no definido para la clase InicioSesion"})
+            return Response({"acceso": False, "mensaje": "Método GET no definido"})
 
 
 class RegistrarPaciente(APIView):
     def post(self, request, format=None):
         if request.method == "POST":
 
-            unUsuario = Usuarios()
-            unUsuario.usuario = request.POST["usuario"]
-            unUsuario.clave = request.POST["clave"]
-            unUsuario.tipo_cuenta = request.POST["tipo_cuenta"]
-            unUsuario.save()
+            usuario = Usuarios()
+            usuario.usuario = request.POST["usuario"]
+            usuario.clave = request.POST["clave"]
+            usuario.tipo_cuenta = request.POST["tipo_cuenta"]
+            usuario.save()
 
-            unPaciente = Pacientes()
-            unPaciente.usuario = unUsuario
-            unPaciente.nombre1 = request.POST["nombre1"]
-            unPaciente.nombre2 = request.POST["nombre2"]
-            unPaciente.apellido1 = request.POST["apellido1"]
-            unPaciente.apellido2 = request.POST["apellido2"]
-            unPaciente.fecha_nacimiento = request.POST["fecha_nacimiento"]
-            unPaciente.genero = request.POST["genero"]
-            unPaciente.correo = request.POST["correo"]
-            unPaciente.save()
+            paciente = Pacientes()
+            paciente.usuario = usuario
+            paciente.nombre1 = request.POST["nombre1"]
+            paciente.nombre2 = request.POST["nombre2"]
+            paciente.apellido1 = request.POST["apellido1"]
+            paciente.apellido2 = request.POST["apellido2"]
+            paciente.fecha_nacimiento = request.POST["fecha_nacimiento"]
+            paciente.genero = request.POST["genero"]
+            paciente.correo = request.POST["correo"]
+            paciente.save()
 
-            return Response({"paciente": unPaciente.nombre1 + " " + unPaciente.apellido1, "id": str(unPaciente.id)})
+            return Response({"paciente": paciente.nombre1 + " " + paciente.apellido1, "id": str(paciente.id)})
         else:
             return Response({"response": "Método no definido para la clase RegistrarPaciente"})
 
@@ -89,23 +121,23 @@ class RegistrarPaciente(APIView):
 class RegistrarFamiliar(APIView):
     def post(self, request, format=None):
         if request.method == "POST":
-            unUsuario = Usuarios()
-            unUsuario.usuario = request.POST["usuario"]
-            unUsuario.clave = request.POST["clave"]
-            unUsuario.tipo_cuenta = request.POST["tipo_cuenta"]
-            unUsuario.save()
+            usuario = Usuarios()
+            usuario.usuario = request.POST["usuario"]
+            usuario.clave = request.POST["clave"]
+            usuario.tipo_cuenta = request.POST["tipo_cuenta"]
+            usuario.save()
 
-            unPaciente = Pacientes.objects.get(pk=request.POST["paciente"])
+            paciente = Pacientes.objects.get(pk=request.POST["paciente"])
 
-            unFamiliar = Familiares()
-            unFamiliar.usuario = unUsuario
-            unFamiliar.nombres = request.POST["nombres"]
-            unFamiliar.apellidos = request.POST["apellidos"]
-            unFamiliar.paciente = unPaciente
-            unFamiliar.genero = request.POST["genero"]
-            unFamiliar.celular = request.POST["celular"]
-            unFamiliar.save()
+            familiar = Familiares()
+            familiar.usuario = usuario
+            familiar.nombres = request.POST["nombres"]
+            familiar.apellidos = request.POST["apellidos"]
+            familiar.paciente = paciente
+            familiar.genero = request.POST["genero"]
+            familiar.celular = request.POST["celular"]
+            familiar.save()
 
-            return Response({"familiar": unFamiliar.nombres, "id": str(unFamiliar.id)})
+            return Response({"familiar": familiar.nombres, "id": str(familiar.id)})
         else:
             return Response({"response": "Método no definido para la clase RegistrarFamiliar"})
