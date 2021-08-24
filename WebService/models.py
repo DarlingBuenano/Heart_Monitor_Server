@@ -1,9 +1,10 @@
 from django.db import models
 from fernet_fields import EncryptedTextField
+from django.core.exceptions import ValidationError
 
 
 class Usuarios(models.Model):
-    nom_usuario = models.CharField(max_length=25)
+    nom_usuario = models.CharField(max_length=25, null=False, blank=False, unique=True)
     clave = EncryptedTextField()
     tipo_cuenta = models.CharField(max_length=8)
 
@@ -18,7 +19,7 @@ class Pacientes(models.Model):
     apellido1 = models.CharField(max_length=20)
     apellido2 = models.CharField(max_length=20)
     fecha_nacimiento = models.DateField()
-    ruta_foto = models.ImageField(upload_to="perfil", null=True, blank=False)
+    ruta_foto = models.ImageField(upload_to="perfil", null=True, blank=True)
     genero = models.CharField(max_length=1)
     correo = models.CharField(max_length=50)
 
@@ -30,7 +31,7 @@ class Familiares(models.Model):
     usuario = models.OneToOneField(Usuarios, on_delete=models.PROTECT, related_name="familiar")
     nombres = models.CharField(max_length=20)
     apellidos = models.CharField(max_length=20)
-    ruta_foto = models.ImageField(upload_to="perfil", null=True, blank=False)
+    ruta_foto = models.ImageField(upload_to="perfil", null=True, blank=True)
     paciente = models.ForeignKey(Pacientes, on_delete=models.PROTECT, related_name="familiares")
     genero = models.CharField(max_length=1)
     celular = models.CharField(max_length=10)

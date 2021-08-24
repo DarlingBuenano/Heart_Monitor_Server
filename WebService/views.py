@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
 from WebService.models import *
 import json
-from django.core.exceptions import ObjectDoesNotExist
 
 
 class InicioSesion(APIView):
@@ -31,7 +32,7 @@ class InicioSesion(APIView):
                                         }
                                     )
                                 json_data = {
-                                    "acceso": True,
+                                    "response": True,
                                     "mensaje": "El usuario esta logeado",
                                     "usuario": user,
                                     "paciente": {
@@ -51,7 +52,7 @@ class InicioSesion(APIView):
                             else:
                                 familiar = Familiares.objects.get(usuario=usuario.id)
                                 json_data = {
-                                    "acceso": True,
+                                    "response": True,
                                     "mensaje": "El usuario esta logeado",
                                     "usuario": user,
                                     "familiar": {
@@ -78,66 +79,83 @@ class InicioSesion(APIView):
                                 }
                         else:
                             json_data = {
-                                "acceso": False,
+                                "response": False,
                                 "mensaje": "Contraseña incorrecta, intentelo nuevamente",
                             }
                         return Response(json_data)
                     except ObjectDoesNotExist:
-                        return Response({"acceso": False, "mensaje": "El usuario no existe, registrate o intentalo de nuevo"})
+                        return Response({"response": False, "mensaje": "El usuario no existe, registrate o intentalo de nuevo"})
                 else:
-                    return Response({"acceso": False, "mensaje": "Campos vacios, ingrese un usuario y contraseña"})
+                    return Response({"response": False, "mensaje": "Campos vacios, ingrese un usuario y contraseña"})
             except:
-                return Response({"acceso": False, "mensaje": "Faltan los parametros"})
+                return Response({"response": False, "mensaje": "Faltan los parametros"})
         else:
-            return Response({"acceso": False, "mensaje": "Método GET no definido"})
+            return Response({"response": False, "mensaje": "Método GET no definido"})
 
 
 class RegistrarPaciente(APIView):
     def post(self, request, format=None):
         if request.method == "POST":
+            try:
+                with transaction.atomic():
+                    usuario = Usuarios()
+                    usuario.nom_usuario = request.POST["usuario"]
+                    usuario.clave = request.POST["clave"]
+                    usuario.tipo_cuenta = "Paciente"
 
-            usuario = Usuarios()
-            usuario.usuario = request.POST["usuario"]
-            usuario.clave = request.POST["clave"]
-            usuario.tipo_cuenta = request.POST["tipo_cuenta"]
-            usuario.save()
+                    usuario.full_clean()
+                    usuario.save()
 
-            paciente = Pacientes()
-            paciente.usuario = usuario
-            paciente.nombre1 = request.POST["nombre1"]
-            paciente.nombre2 = request.POST["nombre2"]
-            paciente.apellido1 = request.POST["apellido1"]
-            paciente.apellido2 = request.POST["apellido2"]
-            paciente.fecha_nacimiento = request.POST["fecha_nacimiento"]
-            paciente.genero = request.POST["genero"]
-            paciente.correo = request.POST["correo"]
-            paciente.save()
+                    paciente = Pacientes()
+                    paciente.usuario = usuario
+                    paciente.nombre1 = request.POST["nombre1"]
+                    paciente.nombre2 = request.POST["nombre2"]
+                    paciente.apellido1 = request.POST["apellido1"]
+                    paciente.apellido2 = request.POST["apellido2"]
+                    paciente.fecha_nacimiento = request.POST["fecha_nacimiento"]
+                    paciente.genero = request.POST["genero"]
+                    paciente.correo = request.POST["correo"]
 
-            return Response({"paciente": paciente.nombre1 + " " + paciente.apellido1, "id": str(paciente.id)})
+                    paciente.full_clean()
+                    paciente.save()
+            except Exception:
+                return Response({"response": False, "mensaje": "Ups! hubo un error al registrar el paciente, intentelo nuevamente "})
+
+            return Response({"response": True, "mensaje": "El paciente fue registrado correctamente"})
         else:
-            return Response({"response": "Método no definido para la clase RegistrarPaciente"})
+            return Response({"response": False, "mensaje": "Método Get no definido"})
 
 
 class RegistrarFamiliar(APIView):
     def post(self, request, format=None):
         if request.method == "POST":
-            usuario = Usuarios()
-            usuario.usuario = request.POST["usuario"]
-            usuario.clave = request.POST["clave"]
-            usuario.tipo_cuenta = request.POST["tipo_cuenta"]
-            usuario.save()
+            try:
+                with transaction.atomic():
+                    user_paciente = Usuarios.objects.get(nom_usuario=request.POST["paciente"])
+                    if user_paciente.tipo_cuenta == "Paciente":
+                        usuario = Usuarios()
+                        usuario.nom_usuario = request.POST["usuario"]
+                        usuario.clave = request.POST["clave"]
+                        usuario.tipo_cuenta = "Familiar"
 
-            paciente = Pacientes.objects.get(pk=request.POST["paciente"])
+                        usuario.full_clean()
+                        usuario.save()
 
-            familiar = Familiares()
-            familiar.usuario = usuario
-            familiar.nombres = request.POST["nombres"]
-            familiar.apellidos = request.POST["apellidos"]
-            familiar.paciente = paciente
-            familiar.genero = request.POST["genero"]
-            familiar.celular = request.POST["celular"]
-            familiar.save()
+                        familiar = Familiares()
+                        familiar.usuario = usuario
+                        familiar.nombres = request.POST["nombres"]
+                        familiar.apellidos = request.POST["apellidos"]
+                        familiar.paciente = user_paciente.paciente
+                        familiar.genero = request.POST["genero"]
+                        familiar.celular = request.POST["celular"]
 
-            return Response({"familiar": familiar.nombres, "id": str(familiar.id)})
+                        familiar.full_clean()
+                        familiar.save()
+                    else:
+                        return Response({"response": False, "mensaje": "Ups! esta enlazando el Familiar con otro Familiar"})
+            except Exception as ex:
+                return Response({"response": False, "mensaje": "Ups! hubo un error al registrar al familiar, intentelo nuevamente"})
+
+            return Response({"response": True, "mensaje": "El familiar fue registrado correctamente"})
         else:
-            return Response({"response": "Método no definido para la clase RegistrarFamiliar"})
+            return Response({"response": False, "mensaje": "Método Get no definido"})
