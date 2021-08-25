@@ -89,11 +89,9 @@ class InicioSesion(APIView):
                     return Response({"response": False, "mensaje": "Campos vacios, ingrese un usuario y contraseña"})
             except:
                 return Response({"response": False, "mensaje": "Faltan los parametros"})
-        else:
-            return Response({"response": False, "mensaje": "Método GET no definido"})
 
 
-class RegistrarPaciente(APIView):
+class Paciente(APIView):
     def post(self, request, format=None):
         if request.method == "POST":
             try:
@@ -122,11 +120,33 @@ class RegistrarPaciente(APIView):
                 return Response({"response": False, "mensaje": "Ups! hubo un error al registrar el paciente, intentelo nuevamente "})
 
             return Response({"response": True, "mensaje": "El paciente fue registrado correctamente"})
-        else:
-            return Response({"response": False, "mensaje": "Método Get no definido"})
+
+    def put(self, request, formate=None):
+        if request.method == "PUT":
+            try:
+                with transaction.atomic():
+                    usuario = Usuarios.objects.get(nom_usuario=request.POST["usuario"])
+                    usuario.clave = request.POST["clave"]
+
+                    paciente = Pacientes.objects.get(usuario=usuario)
+                    paciente.nombre1 = request.POST["nombre1"]
+                    paciente.nombre2 = request.POST["nombre2"]
+                    paciente.apellido1 = request.POST["apellido1"]
+                    paciente.apellido2 = request.POST["apellido2"]
+                    paciente.fecha_nacimiento = request.POST["fecha_nacimiento"]
+                    paciente.genero = request.POST["genero"]
+                    paciente.correo = request.POST["correo"]
+
+                    usuario.full_clean()
+                    usuario.save()
+                    paciente.full_clean()
+                    paciente.save()
+            except Exception as ex:
+                return Response({"response": False, "mensaje": "Ups! hubo un error modificar los datos"})
+            return Response({"response": True, "mensaje": "Los datos fueron modificado correctamente"})
 
 
-class RegistrarFamiliar(APIView):
+class Familiar(APIView):
     def post(self, request, format=None):
         if request.method == "POST":
             try:
@@ -153,9 +173,28 @@ class RegistrarFamiliar(APIView):
                         familiar.save()
                     else:
                         return Response({"response": False, "mensaje": "Ups! esta enlazando el Familiar con otro Familiar"})
-            except Exception as ex:
+            except Exception:
                 return Response({"response": False, "mensaje": "Ups! hubo un error al registrar al familiar, intentelo nuevamente"})
-
             return Response({"response": True, "mensaje": "El familiar fue registrado correctamente"})
-        else:
-            return Response({"response": False, "mensaje": "Método Get no definido"})
+
+    def put(self, request, format=None):
+        if request.method == "PUT":
+            try:
+                with transaction.atomic():
+                    usuario = Usuarios.objects.get(nom_usuario=request.POST["usuario"])
+                    usuario.clave = request.POST["clave"]
+
+                    familiar = Familiares.objects.get(usuario=usuario)
+                    familiar.usuario = usuario
+                    familiar.nombres = request.POST["nombres"]
+                    familiar.apellidos = request.POST["apellidos"]
+                    familiar.genero = request.POST["genero"]
+                    familiar.celular = request.POST["celular"]
+
+                    usuario.full_clean()
+                    usuario.save()
+                    familiar.full_clean()
+                    familiar.save()
+            except Exception as ex:
+                return Response({"response": False, "mensaje": "Ups! hubo un error modificar los datos"})
+            return Response({"response": True, "mensaje": "Los datos fueron modificado correctamente"})
