@@ -117,7 +117,7 @@ class Paciente(APIView):
                     paciente.full_clean()
                     paciente.save()
             except Exception:
-                return Response({"response": False, "mensaje": "Ups! hubo un error al registrar el paciente, intentelo nuevamente "})
+                return Response({"response": False, "mensaje": "Hubo un error al registrar el paciente, intentelo nuevamente "})
 
             return Response({"response": True, "mensaje": "El paciente fue registrado correctamente"})
 
@@ -142,7 +142,7 @@ class Paciente(APIView):
                     paciente.full_clean()
                     paciente.save()
             except Exception as ex:
-                return Response({"response": False, "mensaje": "Ups! hubo un error modificar los datos"})
+                return Response({"response": False, "mensaje": "Hubo un error modificar los datos"})
             return Response({"response": True, "mensaje": "Los datos fueron modificado correctamente"})
 
 
@@ -151,7 +151,10 @@ class Familiar(APIView):
         if request.method == "POST":
             try:
                 with transaction.atomic():
-                    user_paciente = Usuarios.objects.get(nom_usuario=request.POST["paciente"])
+                    try:
+                        user_paciente = Usuarios.objects.get(nom_usuario=request.POST["paciente"])
+                    except:
+                        return Response({"response": False, "mensaje": "El paciente que intenta buscar no existe, intenta nuevamente"})
                     if user_paciente.tipo_cuenta == "Paciente":
                         usuario = Usuarios()
                         usuario.nom_usuario = request.POST["usuario"]
@@ -172,9 +175,9 @@ class Familiar(APIView):
                         familiar.full_clean()
                         familiar.save()
                     else:
-                        return Response({"response": False, "mensaje": "Ups! esta enlazando el Familiar con otro Familiar"})
+                        return Response({"response": False, "mensaje": "Estas intentando añadir un familiar, en vez de un paciente"})
             except Exception:
-                return Response({"response": False, "mensaje": "Ups! hubo un error al registrar al familiar, intentelo nuevamente"})
+                return Response({"response": False, "mensaje": "Hubo un error al registrar al familiar, intentelo nuevamente"})
             return Response({"response": True, "mensaje": "El familiar fue registrado correctamente"})
 
     def put(self, request, format=None):
@@ -196,5 +199,5 @@ class Familiar(APIView):
                     familiar.full_clean()
                     familiar.save()
             except Exception as ex:
-                return Response({"response": False, "mensaje": "Ups! hubo un error modificar los datos"})
+                return Response({"response": False, "mensaje": "Hubo un error modificar los datos"})
             return Response({"response": True, "mensaje": "Los datos fueron modificado correctamente"})
