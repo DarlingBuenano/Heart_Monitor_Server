@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
     <title>App Heart Monitor</title>
 </head>
@@ -19,14 +20,17 @@
             </div>
             <div class="screenshop">
                 <div class="blue-dark">
-                    <img src="../../media/screenshop/heart_monitor_info.svg" alt="">
+                    <img src="/media/screenshop/heart_monitor_info.svg" alt="">
                 </div>
                 <div class="green">
-                    <img src="../../media/screenshop/heart_monitor_config.svg" alt="">
+                    <img src="/media/screenshop/heart_monitor_config.svg" alt="">
                 </div>
             </div>
-            <div class="download">
+            <!-- <div class="download">
                 <button>Descargar apk</button>
+            </div> -->
+            <div class="download">
+                <a href="/media/files/heart_monitor.apk" target="_blank" class="button">Descargar apk</a>
             </div>
         </div>
     </main>
