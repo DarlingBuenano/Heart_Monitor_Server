@@ -14,10 +14,8 @@ class Usuarios(models.Model):
 
 class Pacientes(models.Model):
     usuario = models.OneToOneField(Usuarios, on_delete=models.PROTECT, related_name="paciente")
-    nombre1 = models.CharField(max_length=20)
-    nombre2 = models.CharField(max_length=20)
-    apellido1 = models.CharField(max_length=20)
-    apellido2 = models.CharField(max_length=20)
+    nombres = models.CharField(max_length=20)
+    apellidos = models.CharField(max_length=20)
     fecha_nacimiento = models.DateField()
     ruta_foto = models.ImageField(upload_to="perfil", null=True, blank=True)
     genero = models.CharField(max_length=1)

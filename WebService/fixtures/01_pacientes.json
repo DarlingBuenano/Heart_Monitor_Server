@@ -4,12 +4,10 @@
         "pk": 1,
         "fields": {
             "usuario": 1,
-            "nombre1": "Darling",
-            "nombre2": "Omar",
-            "apellido1": "Buenaño",
-            "apellido2": "Vera",
+            "nombres": "Darling",
+            "apellidos": "Buenaño",
             "fecha_nacimiento": "1999-02-05",
-            "ruta_foto":"perfil/user.png",
+            "ruta_foto": "perfil/user.png",
             "genero": "M",
             "correo": "dwverling@gmail.com"
         }
@@ -19,12 +17,10 @@
         "pk": 2,
         "fields": {
             "usuario": 2,
-            "nombre1": "Henry",
-            "nombre2": "Heriberto",
-            "apellido1": "Pérez",
-            "apellido2": "Muñoz",
+            "nombres": "Henry",
+            "apellidos": "Pérez",
             "fecha_nacimiento": "2000-01-01",
-            "ruta_foto":"perfil/user.png",
+            "ruta_foto": "perfil/user.png",
             "genero": "M",
             "correo": "hgperez@gmail.com"
         }

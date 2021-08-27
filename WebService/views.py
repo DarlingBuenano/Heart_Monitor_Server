@@ -38,10 +38,8 @@ class InicioSesion(APIView):
                                     "paciente": {
                                         "tipo_cuenta": "Paciente",
                                         "id": paciente.id,
-                                        "fir_nombre": paciente.nombre1,
-                                        "sec_nombre": paciente.nombre2,
-                                        "fir_apellido": paciente.apellido1,
-                                        "sec_apellido": paciente.apellido2,
+                                        "nombres": paciente.nombres,
+                                        "apellidos": paciente.apellidos,
                                         "fecha_nacimiento": paciente.fecha_nacimiento,
                                         "ruta_foto": str(paciente.ruta_foto),
                                         "genero": paciente.genero,
@@ -66,10 +64,8 @@ class InicioSesion(APIView):
                                         "paciente": {
                                             "usuario": familiar.paciente.usuario.nom_usuario,
                                             "id": familiar.paciente.id,
-                                            "fir_nombre": familiar.paciente.nombre1,
-                                            "sec_nombre": familiar.paciente.nombre2,
-                                            "fir_apellido": familiar.paciente.apellido1,
-                                            "sec_apellido": familiar.paciente.apellido2,
+                                            "nombres": familiar.paciente.nombres,
+                                            "apellidos": familiar.paciente.apellidos,
                                             "fecha_nacimiento": familiar.paciente.fecha_nacimiento,
                                             "ruta_foto": str(familiar.paciente.ruta_foto),
                                             "genero": familiar.paciente.genero,
@@ -96,6 +92,11 @@ class Paciente(APIView):
         if request.method == "POST":
             try:
                 with transaction.atomic():
+                    try:
+                        if Usuarios.objects.get(nom_usuario=request.POST["usuario"]):
+                            return Response({"response": False, "mensaje": "Usuario ya esta creado, intenta con otro nuevamente"})
+                    except:
+                        pass
                     usuario = Usuarios()
                     usuario.nom_usuario = request.POST["usuario"]
                     usuario.clave = request.POST["clave"]
@@ -106,10 +107,8 @@ class Paciente(APIView):
 
                     paciente = Pacientes()
                     paciente.usuario = usuario
-                    paciente.nombre1 = request.POST["nombre1"]
-                    paciente.nombre2 = request.POST["nombre2"]
-                    paciente.apellido1 = request.POST["apellido1"]
-                    paciente.apellido2 = request.POST["apellido2"]
+                    paciente.nombres = request.POST["nombres"]
+                    paciente.apellidos = request.POST["apellidos"]
                     paciente.fecha_nacimiento = request.POST["fecha_nacimiento"]
                     paciente.genero = request.POST["genero"]
                     paciente.correo = request.POST["correo"]
@@ -117,7 +116,7 @@ class Paciente(APIView):
                     paciente.full_clean()
                     paciente.save()
             except Exception:
-                return Response({"response": False, "mensaje": "Hubo un error al registrar el paciente, intentelo nuevamente "})
+                return Response({"response": False, "mensaje": "Un campo se encuentra vació, verifica que todos estén completos"})
 
             return Response({"response": True, "mensaje": "El paciente fue registrado correctamente"})
 
@@ -129,10 +128,8 @@ class Paciente(APIView):
                     usuario.clave = request.POST["clave"]
 
                     paciente = Pacientes.objects.get(usuario=usuario)
-                    paciente.nombre1 = request.POST["nombre1"]
-                    paciente.nombre2 = request.POST["nombre2"]
-                    paciente.apellido1 = request.POST["apellido1"]
-                    paciente.apellido2 = request.POST["apellido2"]
+                    paciente.nombres = request.POST["nombres"]
+                    paciente.apellidos = request.POST["apellidos"]
                     paciente.fecha_nacimiento = request.POST["fecha_nacimiento"]
                     paciente.genero = request.POST["genero"]
                     paciente.correo = request.POST["correo"]
@@ -145,6 +142,27 @@ class Paciente(APIView):
                 return Response({"response": False, "mensaje": "Hubo un error modificar los datos"})
             return Response({"response": True, "mensaje": "Los datos fueron modificado correctamente"})
 
+    def get(self, request, formate=None):
+        if request.method == "GET":
+            try:
+                usuario = Usuarios.objects.get(nom_usuario=request.GET["username"])
+                json_data = {}
+                if usuario.tipo_cuenta != "Familiar":
+                    return Response(
+                        {
+                            "response": True,
+                            "mensaje": "Paciente encontrado",
+                            "paciente": {
+                                "nombres": usuario.paciente.nombres,
+                                "apellidos": usuario.paciente.apellidos,
+                            },
+                        }
+                    )
+                else:
+                    return Response({"response": False, "mensaje": "Estas intentando añadir un familiar, en vez de un paciente"})
+            except Exception as ex:
+                return Response({"response": False, "mensaje": "El usuario que esta ingresando no existe, intentalo nuevamente"})
+
 
 class Familiar(APIView):
     def post(self, request, format=None):
@@ -152,7 +170,12 @@ class Familiar(APIView):
             try:
                 with transaction.atomic():
                     try:
-                        user_paciente = Usuarios.objects.get(nom_usuario=request.POST["paciente"])
+                        if Usuarios.objects.get(nom_usuario=request.POST["usuario"]):
+                            return Response({"response": False, "mensaje": "Usuario ya esta creado, intenta con otro nuevamente"})
+                    except:
+                        pass
+                    try:
+                        user_paciente = Usuarios.objects.get(nom_usuario=request.POST["user_paciente"])
                     except:
                         return Response({"response": False, "mensaje": "El paciente que intenta buscar no existe, intenta nuevamente"})
                     if user_paciente.tipo_cuenta == "Paciente":
@@ -176,8 +199,8 @@ class Familiar(APIView):
                         familiar.save()
                     else:
                         return Response({"response": False, "mensaje": "Estas intentando añadir un familiar, en vez de un paciente"})
-            except Exception:
-                return Response({"response": False, "mensaje": "Hubo un error al registrar al familiar, intentelo nuevamente"})
+            except Exception as ex:
+                return Response({"response": False, "mensaje": "Un campo se encuentra vació, verifica que todos estén completos"})
             return Response({"response": True, "mensaje": "El familiar fue registrado correctamente"})
 
     def put(self, request, format=None):
