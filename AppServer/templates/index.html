@@ -1,0 +1,34 @@
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <title>App Heart Monitor</title>
+</head>
+<body class="theme-light">
+    <main>
+        <div class="flex-row">
+            <div class="slogan">
+                <h1 class="border-b">Heart Monitor</h1>
+                <h4>Aplicación móvil para la detección y monitorización de pulsos cardiacos de personas que padecen enfermedades cardiovasculares en tiempo real.</h4>
+            </div>
+            <div class="screenshop">
+                <div class="blue-dark">
+                    <img src="../../media/screenshop/heart_monitor_info.svg" alt="">
+                </div>
+                <div class="green">
+                    <img src="../../media/screenshop/heart_monitor_config.svg" alt="">
+                </div>
+            </div>
+            <div class="download">
+                <button>Descargar apk</button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
