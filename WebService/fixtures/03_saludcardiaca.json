@@ -4,7 +4,59 @@
         "pk": 1,
         "fields": {
             "paciente": 1,
-            "fecha": "2021-08-15 15:00"
+            "fecha": "2021-08-30",
+            "bpm": "70",
+            "hora": "01:50"
+        }
+    },
+    {
+        "model": "WebService.SaludCardiaca",
+        "pk": 2,
+        "fields": {
+            "paciente": 1,
+            "fecha": "2021-08-30",
+            "bpm": "80",
+            "hora": "01:55"
+        }
+    },
+    {
+        "model": "WebService.SaludCardiaca",
+        "pk": 3,
+        "fields": {
+            "paciente": 1,
+            "fecha": "2021-08-30",
+            "bpm": "75",
+            "hora": "02:00"
+        }
+    },
+    {
+        "model": "WebService.SaludCardiaca",
+        "pk": 4,
+        "fields": {
+            "paciente": 1,
+            "fecha": "2021-08-30",
+            "bpm": "85",
+            "hora": "02:05"
+        }
+    },
+    {
+        "model": "WebService.SaludCardiaca",
+        "pk": 5,
+        "fields": {
+            "paciente": 1,
+            "fecha": "2021-08-30",
+            "bpm": "76",
+            "hora": "02:10"
+        }
+    },
+    {
+        "model": "WebService.SaludCardiaca",
+        "pk": 6,
+        "fields": {
+            "paciente": 1,
+            "fecha": "2021-08-30",
+            "bpm": "79",
+            "hora": "02:15"
         }
     }
 ]

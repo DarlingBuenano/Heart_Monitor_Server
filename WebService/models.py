@@ -40,19 +40,12 @@ class Familiares(models.Model):
 
 class SaludCardiaca(models.Model):
     paciente = models.ForeignKey(Pacientes, on_delete=models.PROTECT, related_name="salud_cardiaca")
-    fecha = models.DateTimeField()
+    bpm = models.CharField(max_length=3, blank=True)
+    fecha = models.DateField()
+    hora = models.TimeField()
 
     class Meta:
         db_table = "salud_cardiaca"
-
-
-class BPM(models.Model):
-    salud_cardiaca = models.ForeignKey(SaludCardiaca, on_delete=models.PROTECT, related_name="BPM")
-    bpm = models.CharField(max_length=3)
-    hora = models.DateTimeField()
-
-    class Meta:
-        db_table = "bpm"
 
 
 class Alertas(models.Model):

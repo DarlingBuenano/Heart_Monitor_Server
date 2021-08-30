@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "WebService",
     "AppServer",
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +57,22 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "Heart_Monitor_Server.wsgi.application"
+ASGI_APPLICATION = "Heart_Monitor_Server.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        }
+    }
+}
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 DATABASES = {
     "default": {

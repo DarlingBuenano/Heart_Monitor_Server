@@ -21,7 +21,6 @@ Pasos que se siguen para la elaboración del proyecto
 * Usuarios
 * Familiar
 * SaludCardiaca
-* BPM
 * Alertas
 * SMS
 
@@ -34,9 +33,12 @@ python manage.py loaddata 00_usuarios.json
 python manage.py loaddata 01_pacientes.json
 python manage.py loaddata 02_familiares.json
 python manage.py loaddata 03_saludcardiaca.json
-python manage.py loaddata 04_bpm.json
-python manage.py loaddata 05_alertas.json
-python manage.py loaddata 06_sms.json
+python manage.py loaddata 04_alertas.json
+python manage.py loaddata 05_sms.json
+
+# Por si deseas borrar las tablas de la base de datos
+drop schema public cascade;
+create schema public;
 
 # Crear la app AppServer (Esto sólo si se desea hacer una aplicacion web con tecnologías de frontend)
 python manage.py startapp AppServer
