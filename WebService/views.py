@@ -35,8 +35,8 @@ class InicioSesion(APIView):
                                     "response": True,
                                     "mensaje": "El usuario esta logeado",
                                     "usuario": user,
+                                    "tipo_cuenta": "Paciente",
                                     "paciente": {
-                                        "tipo_cuenta": "Paciente",
                                         "id": paciente.id,
                                         "nombres": paciente.nombres,
                                         "apellidos": paciente.apellidos,
@@ -53,8 +53,8 @@ class InicioSesion(APIView):
                                     "response": True,
                                     "mensaje": "El usuario esta logeado",
                                     "usuario": user,
+                                    "tipo_cuenta": "Familiar",
                                     "familiar": {
-                                        "tipo_cuenta": "Familiar",
                                         "id": familiar.id,
                                         "nombres": familiar.nombres,
                                         "apellidos": familiar.apellidos,
@@ -224,3 +224,22 @@ class Familiar(APIView):
             except Exception as ex:
                 return Response({"response": False, "mensaje": "Hubo un error modificar los datos"})
             return Response({"response": True, "mensaje": "Los datos fueron modificado correctamente"})
+
+    def get(self, request, formate=None):
+        if request.method == "GET":
+            try:
+                usuario = Familiares.objects.get(pk=request.GET["id"])
+                json_data = {
+                    "response": True,
+                    "mensaje": "Paciente encontrado",
+                    "paciente": {
+                        "id": usuario.paciente.id,
+                        "nombres": usuario.paciente.nombres,
+                        "apellidos": usuario.paciente.apellidos,
+                        "ruta_foto": str(usuario.paciente.ruta_foto),
+                        "genero": usuario.paciente.genero,
+                    },
+                }
+                return Response(json_data)
+            except:
+                return Response({"response": False, "mensaje": "Error!!"})
